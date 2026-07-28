@@ -1,0 +1,24 @@
+{
+  "name": "visa-desktop",
+  "productName": "visaHater",
+  "version": "1.0.0",
+  "description": "visaHater desktop wrapper",
+  "main": "main.js",
+  "author": "dicebanned.art",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "electron": "43.2.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "art.dicebanned.visahater",
+    "productName": "visaHater",
+    "asar": true,
+    "directories": { "output": "dist" },
+    "compression": "normal",
+    "win": {
+      "target": ["zip"],
+      "icon": "icon.ico"
+    }
+  }
+}
