@@ -1,0 +1,24 @@
+{
+  "name": "cards-desktop",
+  "productName": "iHateCards",
+  "version": "1.0.0",
+  "description": "iHateCards desktop wrapper",
+  "main": "main.js",
+  "author": "dicebanned.art",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "electron": "43.2.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "art.dicebanned.ihatecards",
+    "productName": "iHateCards",
+    "asar": true,
+    "directories": { "output": "dist" },
+    "compression": "normal",
+    "win": {
+      "target": ["zip"],
+      "icon": "icon.ico"
+    }
+  }
+}
