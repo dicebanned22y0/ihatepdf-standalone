@@ -1,0 +1,59 @@
+name: Build Windows apps
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'apps/**'
+      - '.github/workflows/build.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [ihatepdf, crop, cards, photo, visa]
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: apps/${{ matrix.app }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Windows zip
+        run: npx electron-builder --win zip --x64
+
+      - name: Smoke test (app launches, no crash)
+        shell: bash
+        run: |
+          set -e
+          UNPACKED="dist/win-unpacked"
+          EXE=$(ls "$UNPACKED"/*.exe | head -n1)
+          echo "Launching $EXE for a smoke test..."
+          "$EXE" &
+          PID=$!
+          sleep 8
+          if ! kill -0 $PID 2>/dev/null; then
+            echo "::error::App exited/crashed within 8s of launch"
+            exit 1
+          fi
+          echo "App is still running after 8s - OK"
+          taskkill //F //PID $PID || true
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          files: apps/${{ matrix.app }}/dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
